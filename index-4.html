@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>درجاتي — لوحة الأستاذ</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;width:100%;min-height:100%;font-family:Tahoma,Arial,sans-serif;background:#f3f6fb;color:#172033}
+body{overflow-x:hidden}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:0}
+.hidden{display:none!important}
+.container{width:100%;max-width:1200px;margin:auto;padding:16px}
+.hero{width:100%;background:linear-gradient(135deg,#145b94,#2479bb);color:#fff;padding:28px 16px}
+.hero-inner{max-width:1200px;margin:auto}
+.hero h1{margin:0 0 8px;font-size:clamp(30px,7vw,52px)}
+.hero p{margin:0 0 8px;font-size:clamp(16px,4vw,23px)}
+.hero small{font-size:15px}
+.login-wrap{min-height:100vh;display:grid;place-items:center;padding:20px;background:linear-gradient(135deg,#0d4777,#287fc0)}
+.login-card{width:min(440px,100%);background:#fff;border-radius:22px;padding:28px;box-shadow:0 15px 50px #0003}
+.login-card h1{text-align:center;margin-top:0;color:#145b94}
+label{display:block;margin:12px 0 7px;font-weight:700}
+input,select,textarea{width:100%;padding:12px 13px;border:1px solid #d6dce6;border-radius:11px;background:#fff;color:#172033;outline:none}
+input:focus,select:focus,textarea:focus{border-color:#2677b8;box-shadow:0 0 0 3px #2677b81c}
+textarea{min-height:100px;resize:vertical}
+.btn{padding:11px 16px;border-radius:11px;background:#236ca8;color:#fff;font-weight:700}
+.btn:hover{filter:brightness(.96)}
+.btn-danger{background:#c62828}
+.btn-secondary{background:#65758b}
+.btn-success{background:#188754}
+.btn-light{background:#eef3f8;color:#1b2b3a}
+.error{color:#c62828;background:#ffebee;padding:10px;border-radius:10px;margin-top:10px}
+.success{color:#146c43;background:#e9f7ef;padding:10px;border-radius:10px;margin-top:10px}
+.nav{display:flex;gap:8px;overflow-x:auto;padding:12px 0;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav button{white-space:nowrap;padding:12px 18px;border-radius:12px;background:#fff;color:#172033}
+.nav button.active{background:#236ca8;color:#fff}
+.card{background:#fff;border-radius:20px;padding:20px;margin:14px 0;box-shadow:0 5px 22px #1d35571a}
+.card h2{margin-top:0}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.form-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;min-width:760px;border-collapse:collapse}
+th,td{padding:11px 9px;border-bottom:1px solid #e8edf3;text-align:center;white-space:nowrap}
+th{background:#f1f6fb;font-weight:800}
+.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#eef3f8}
+.class-cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.class-card{background:#fff;border:2px solid #e2e8f0;border-radius:17px;padding:18px;text-align:center;font-weight:800}
+.class-card:hover{border-color:#236ca8;background:#f4f9fd}
+.exam{border:1px solid #dbe5ef;border-radius:15px;padding:15px;margin:10px 0;background:#fafdff}
+.exam-title{font-size:18px;font-weight:800}
+.countdown{margin-top:10px;font-weight:800;color:#b02a37}
+.notice{border-right:5px solid #236ca8;background:#f7fbff;padding:14px;border-radius:10px;margin:10px 0}
+.notice h3{margin:0 0 7px}
+.portal-code{max-width:500px;margin:25px auto}
+.muted{color:#68768a}
+.small{font-size:13px}
+.empty{padding:25px;text-align:center;color:#68768a}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.student-row{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid #e8edf3;padding:12px 0}
+@media(max-width:800px){
+  .container{padding:12px}
+  .grid,.grid-3{grid-template-columns:1fr}
+  .class-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .card{padding:15px;border-radius:16px}
+  .hero{padding:22px 14px}
+  .form-actions .btn{width:100%}
+}
+@media(max-width:430px){
+  .class-cards{grid-template-columns:1fr}
+  .login-card{padding:20px}
+  th,td{padding:9px 7px}
+}
+</style>
+</head>
+<body>
+
+<section id="loginView" class="login-wrap">
+  <div class="login-card">
+    <h1>درجاتي</h1>
+    <p style="text-align:center" class="muted">نظام متابعة الطلبة — اللغة الإنجليزية</p>
+    <form id="loginForm">
+      <label>اسم المستخدم</label>
+      <input id="loginUser" autocomplete="username" required placeholder="اكتب اسم المستخدم">
+      <label>الرمز السري</label>
+      <input id="loginPass" type="password" autocomplete="current-password" required placeholder="اكتب الرمز السري">
+      <button class="btn" style="width:100%;margin-top:16px">دخول الإدارة</button>
+      <div id="loginMsg"></div>
+    </form>
+  </div>
+</section>
+
+<section id="adminView" class="hidden">
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="topbar">
+        <div>
+          <h1>درجاتي</h1>
+          <p>نظام متابعة الطلبة — اللغة الإنجليزية</p>
+          <small>لوحة الأستاذ</small>
+        </div>
+        <button class="btn btn-light" onclick="logout()">خروج</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <nav class="nav">
+      <button data-tab="students" class="active">الطلاب</button>
+      <button data-tab="grades">الدرجات</button>
+      <button data-tab="attendance">الحضور</button>
+      <button data-tab="exams">الامتحانات</button>
+      <button data-tab="notices">التبليغات</button>
+    </nav>
+
+    <section id="tab-students" class="tab">
+      <div class="card">
+        <h2>إضافة طالب</h2>
+        <form id="studentForm" class="grid">
+          <div>
+            <label>الاسم الثلاثي</label>
+            <input id="studentName" required placeholder="مثال: أحمد محمد علي">
+          </div>
+          <div>
+            <label>الصف</label>
+            <select id="studentClass" required>
+              <option value="">اختر الصف</option>
+              <option>الثالث المتوسط</option>
+              <option>الرابع العلمي</option>
+              <option>الخامس العلمي</option>
+              <option>السادس العلمي</option>
+            </select>
+          </div>
+          <div class="form-actions" style="grid-column:1/-1">
+            <button class="btn">إضافة وتوليد الرمز السري</button>
+          </div>
+        </form>
+        <div id="studentMsg"></div>
+      </div>
+
+      <div class="card">
+        <div class="topbar">
+          <h2>الطلاب</h2>
+          <button class="btn btn-light" onclick="loadStudents()">تحديث</button>
+        </div>
+        <div id="classCards" class="class-cards"></div>
+        <div id="studentsList" style="margin-top:15px"></div>
+      </div>
+    </section>
+
+    <section id="tab-grades" class="tab hidden">
+      <div class="card">
+        <h2>درجات اللغة الإنجليزية</h2>
+        <p class="muted">اختر الصف لعرض طلابه وإدخال الدرجات.</p>
+        <div id="gradeClasses" class="class-cards"></div>
+      </div>
+      <div id="gradePanel" class="card hidden">
+        <div class="topbar">
+          <h2 id="gradeTitle"></h2>
+          <button class="btn btn-light" onclick="closeGradePanel()">رجوع للصفوف</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>الطالب</th><th>ش1 ف1</th><th>ش2 ف1</th><th>سعي ف1</th>
+                <th>نصف السنة</th><th>ش1 ف2</th><th>ش2 ف2</th><th>سعي ف2</th><th>السعي السنوي</th><th>حفظ</th>
+              </tr>
+            </thead>
+            <tbody id="gradeBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-attendance" class="tab hidden">
+      <div class="card">
+        <h2>الحضور</h2>
+        <div class="grid">
+          <div>
+            <label>الصف</label>
+            <select id="attendanceClass"></select>
+          </div>
+          <div>
+            <label>التاريخ</label>
+            <input id="attendanceDate" type="date">
+          </div>
+        </div>
+      </div>
+      <div id="attendancePanel" class="card"></div>
+    </section>
+
+    <section id="tab-exams" class="tab hidden">
+      <div class="card">
+        <h2>إضافة امتحان</h2>
+        <form id="examForm" class="grid">
+          <div><label>الصف</label><select id="examClass" required></select></div>
+          <div><label>نوع الامتحان</label><input id="examType" required placeholder="امتحان شهر أول إنكليزي"></div>
+          <div><label>التاريخ</label><input id="examDate" type="date" required></div>
+          <div><label>الوقت</label><input id="examTime" type="time"></div>
+          <div style="grid-column:1/-1"><label>ملاحظة</label><input id="examNote"></div>
+          <div class="form-actions" style="grid-column:1/-1"><button class="btn">إضافة الامتحان</button></div>
+        </form>
+      </div>
+      <div class="card">
+        <h2>الامتحانات المسجلة</h2>
+        <div id="examList"></div>
+      </div>
+    </section>
+
+    <section id="tab-notices" class="tab hidden">
+      <div class="card">
+        <h2>التبليغات</h2>
+        <form id="noticeForm" class="grid">
+          <div><label>الصف</label><select id="noticeClass" required></select></div>
+          <div><label>نوع التبليغ</label>
+            <select id="noticeType">
+              <option>تبليغ عام</option><option>الحضور</option><option>تغيير موعد الامتحان</option><option>واجب</option><option>ملاحظة مهمة</option><option>إعلان</option>
+            </select>
+          </div>
+          <div style="grid-column:1/-1"><label>العنوان</label><input id="noticeTitle" required></div>
+          <div style="grid-column:1/-1"><label>النص</label><textarea id="noticeBody" required></textarea></div>
+          <div class="form-actions" style="grid-column:1/-1"><button class="btn">نشر التبليغ</button></div>
+        </form>
+      </div>
+      <div class="card">
+        <h2>التبليغات المنشورة</h2>
+        <div id="noticeList"></div>
+      </div>
+    </section>
+  </main>
+</section>
+
+<script>
+const classes=["الثالث المتوسط","الرابع العلمي","الخامس العلمي","السادس العلمي"];
+let students=[], grades=[], attendanceRecords=[], selectedGradeClass="";
+const $=id=>document.getElementById(id);
+
+async function api(url,opts={}){
+  const r=await fetch(url,{headers:{"Content-Type":"application/json"},...opts});
+  let data={}; try{data=await r.json()}catch{}
+  if(!r.ok) throw new Error(data.error||"حدث خطأ");
+  return data;
+}
+function esc(v){
+  return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function fillClassSelect(id,all=false){
+  const el=$(id); if(!el)return;
+  el.innerHTML=(all?'<option value="جميع الصفوف">جميع الصفوف</option>':'<option value="">اختر الصف</option>')+
+    classes.map(c=>`<option>${esc(c)}</option>`).join("");
+}
+async function check(){
+  try{
+    const m=await api("/api/me");
+    if(m.loggedIn) showAdmin(); else showLogin();
+  }catch{showLogin()}
+}
+function showLogin(){
+  $("loginView").classList.remove("hidden");
+  $("adminView").classList.add("hidden");
+}
+function showAdmin(){
+  $("loginView").classList.add("hidden");
+  $("adminView").classList.remove("hidden");
+  fillClassSelect("attendanceClass");
+  fillClassSelect("examClass");
+  fillClassSelect("noticeClass",true);
+  $("attendanceDate").value=new Date().toISOString().slice(0,10);
+  loadStudents();
+  loadGrades();
+  loadExams();
+  loadNotices();
+  loadAttendance();
+}
+$("loginForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  $("loginMsg").innerHTML="";
+  try{
+    await api("/api/login",{method:"POST",body:JSON.stringify({username:$("loginUser").value,password:$("loginPass").value})});
+    showAdmin();
+  }catch(err){$("loginMsg").innerHTML=`<div class="error">${esc(err.message)}</div>`}
+});
+async function logout(){
+  await api("/api/logout",{method:"POST"}); showLogin();
+}
+document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");
+  document.querySelectorAll(".tab").forEach(x=>x.classList.add("hidden"));
+  $("tab-"+b.dataset.tab).classList.remove("hidden");
+  if(b.dataset.tab==="attendance")loadAttendance();
+}));
+
+$("studentForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  $("studentMsg").innerHTML="";
+  try{
+    const s=await api("/api/students",{method:"POST",body:JSON.stringify({name:$("studentName").value,class_name:$("studentClass").value})});
+    $("studentName").value=""; $("studentClass").value="";
+    $("studentMsg").innerHTML=`<div class="success">تمت إضافة <b>${esc(s.name)}</b> — الرمز السري: <b>${esc(s.code)}</b></div>`;
+    loadStudents(); loadGrades();
+  }catch(err){$("studentMsg").innerHTML=`<div class="error">${esc(err.message)}</div>`}
+});
+
+async function loadStudents(){
+  try{students=await api("/api/students"); renderStudents(); renderClassCards()}catch(err){console.error(err)}
+}
+function renderClassCards(){
+  $("classCards").innerHTML=classes.map(c=>{
+    const n=students.filter(s=>s.class_name===c).length;
+    return `<button class="class-card" onclick="openStudentClass('${esc(c)}')">${esc(c)}<br><span class="muted small">${n} طالب</span></button>`;
+  }).join("");
+}
+function openStudentClass(c){
+  const list=students.filter(s=>s.class_name===c);
+  $("studentsList").innerHTML=`<div class="card" style="margin-top:12px"><div class="topbar"><h3>${esc(c)}</h3><button class="btn btn-light" onclick="renderStudents()">كل الصفوف</button></div>`+
+    (list.length?list.map(s=>`<div class="student-row"><div><b>${esc(s.name)}</b><br><span class="muted">${esc(s.class_name)} — الرمز: <b>${esc(s.code)}</b></span></div><button class="btn btn-danger" onclick="deleteStudent(${s.id})">حذف</button></div>`).join(""):'<div class="empty">لا يوجد طلاب في هذا الصف.</div>')+"</div>";
+}
+function renderStudents(){
+  $("studentsList").innerHTML=students.length?`<div class="table-wrap"><table><thead><tr><th>الاسم</th><th>الصف</th><th>الرمز السري</th><th>إجراء</th></tr></thead><tbody>${students.map(s=>`<tr><td>${esc(s.name)}</td><td>${esc(s.class_name)}</td><td><b>${esc(s.code)}</b></td><td><button class="btn btn-danger" onclick="deleteStudent(${s.id})">حذف</button></td></tr>`).join("")}</tbody></table></div>`:'<div class="empty">لا يوجد طلاب مضافون.</div>';
+}
+async function deleteStudent(id){
+  if(!confirm("هل تريد حذف الطالب؟"))return;
+  await api("/api/students/"+id,{method:"DELETE"}); loadStudents(); loadGrades();
+}
+
+async function loadGrades(){
+  try{
+    grades=await api("/api/grades");
+    $("gradeClasses").innerHTML=classes.map(c=>{
+      const n=grades.filter(s=>s.class_name===c).length;
+      return `<button class="class-card" onclick="openGradeClass('${esc(c)}')">${esc(c)}<br><span class="muted small">${n} طالب</span></button>`;
+    }).join("");
+  }catch(err){console.error(err)}
+}
+function openGradeClass(c){
+  selectedGradeClass=c;
+  $("gradeTitle").textContent="درجات "+c;
+  $("gradePanel").classList.remove("hidden");
+  $("gradeClasses").parentElement.classList.add("hidden");
+  const rows=grades.filter(s=>s.class_name===c);
+  $("gradeBody").innerHTML=rows.length?rows.map(r=>`
+    <tr>
+      <td>${esc(r.name)}</td>
+      ${gradeInput(r,"m1_t1")}${gradeInput(r,"m2_t1")}
+      <td id="f1-${r.id}">${fmt(r.f1)}</td>
+      ${gradeInput(r,"midyear")}
+      ${gradeInput(r,"m1_t2")}${gradeInput(r,"m2_t2")}
+      <td id="f2-${r.id}">${fmt(r.f2)}</td>
+      <td id="annual-${r.id}">${fmt(r.annual)}</td>
+      <td><button class="btn btn-success" onclick="saveGrade(${r.id})">حفظ</button></td>
+    </tr>`).join(""):'<tr><td colspan="10">لا يوجد طلاب في هذا الصف.</td></tr>';
+}
+function closeGradePanel(){
+  $("gradePanel").classList.add("hidden");
+  $("gradeClasses").parentElement.classList.remove("hidden");
+}
+function gradeInput(r,k){return `<td><input style="min-width:85px" type="number" min="0" max="100" id="g-${r.id}-${k}" value="${r[k]??""}" oninput="previewGrade(${r.id})"></td>`}
+function num(id){const v=$(id).value;return v===""?null:Number(v)}
+function avg(a,b){return a==null||b==null?null:(a+b)/2}
+function previewGrade(id){
+  const f1=avg(num(`g-${id}-m1_t1`),num(`g-${id}-m2_t1`));
+  const f2=avg(num(`g-${id}-m1_t2`),num(`g-${id}-m2_t2`));
+  $(`f1-${id}`).textContent=fmt(f1);$(`f2-${id}`).textContent=fmt(f2);$(`annual-${id}`).textContent=fmt(avg(f1,f2));
+}
+function fmt(v){return v==null?"—":Number(v).toFixed(1).replace(/\.0$/,"")}
+async function saveGrade(id){
+  await api("/api/grades/"+id,{method:"PUT",body:JSON.stringify({
+    m1_t1:num(`g-${id}-m1_t1`),m2_t1:num(`g-${id}-m2_t1`),midyear:num(`g-${id}-midyear`),m1_t2:num(`g-${id}-m1_t2`),m2_t2:num(`g-${id}-m2_t2`)
+  })});
+  alert("تم حفظ الدرجات");
+  loadGrades();
+}
+
+$("attendanceClass").addEventListener("change",loadAttendance);
+$("attendanceDate").addEventListener("change",loadAttendance);
+async function loadAttendance(){
+  const c=$("attendanceClass").value,d=$("attendanceDate").value;
+  const list=students.filter(s=>!c||s.class_name===c);
+  let saved=[];
+  try{saved=await api("/api/attendance?date="+encodeURIComponent(d))}catch{}
+  const map=new Map(saved.map(x=>[x.student_id,x.status]));
+  $("attendancePanel").innerHTML=`<div class="topbar"><h2>${c?esc(c):"اختر الصف"}</h2><button class="btn btn-success" onclick="saveAttendance()">حفظ الحضور</button></div>`+
+    (c?(list.length?`<div class="table-wrap"><table><thead><tr><th>الطالب</th><th>الصف</th><th>الحالة</th></tr></thead><tbody>${list.map(s=>`<tr><td>${esc(s.name)}</td><td>${esc(s.class_name)}</td><td><select class="att-status" data-id="${s.id}"><option ${map.get(s.id)==="حاضر"?"selected":""}>حاضر</option><option ${map.get(s.id)==="غائب"?"selected":""}>غائب</option><option ${map.get(s.id)==="مجاز"?"selected":""}>مجاز</option></select></td></tr>`).join("")}</tbody></table></div>`:'<div class="empty">لا يوجد طلاب في هذا الصف.</div>'):'<div class="empty">اختر الصف أولاً.</div>');
+}
+async function saveAttendance(){
+  const date=$("attendanceDate").value;
+  const records=[...document.querySelectorAll(".att-status")].map(x=>({student_id:Number(x.dataset.id),status:x.value}));
+  await api("/api/attendance",{method:"POST",body:JSON.stringify({date,records})});
+  alert("تم حفظ الحضور");
+}
+
+$("examForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  await api("/api/exams",{method:"POST",body:JSON.stringify({
+    class_name:$("examClass").value,type:$("examType").value,date:$("examDate").value,time:$("examTime").value,note:$("examNote").value
+  })});
+  e.target.reset();loadExams();alert("تمت إضافة الامتحان");
+});
+async function loadExams(){
+  try{
+    const exams=await api("/api/exams");
+    $("examList").innerHTML=exams.length?exams.map(x=>`<div class="exam"><div class="exam-title">${esc(x.type)}</div><div>${esc(x.class_name)} — ${esc(x.date)} ${esc(x.time||"")}</div><div class="muted">${esc(x.note||"")}</div><button class="btn btn-danger" style="margin-top:10px" onclick="deleteExam(${x.id})">حذف</button></div>`).join(""):'<div class="empty">لا توجد امتحانات.</div>';
+  }catch(err){console.error(err)}
+}
+async function deleteExam(id){if(confirm("حذف الامتحان؟")){await api("/api/exams/"+id,{method:"DELETE"});loadExams()}}
+
+$("noticeForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  await api("/api/notices",{method:"POST",body:JSON.stringify({
+    class_name:$("noticeClass").value,type:$("noticeType").value,title:$("noticeTitle").value,body:$("noticeBody").value
+  })});
+  e.target.reset();fillClassSelect("noticeClass",true);loadNotices();alert("تم نشر التبليغ");
+});
+async function loadNotices(){
+  try{
+    const rows=await api("/api/notices");
+    $("noticeList").innerHTML=rows.length?rows.map(x=>`<div class="notice"><h3>${esc(x.title)}</h3><div class="small">${esc(x.type)} — ${esc(x.class_name)}</div><p>${esc(x.body)}</p><button class="btn btn-danger" onclick="deleteNotice(${x.id})">حذف</button></div>`).join(""):'<div class="empty">لا توجد تبليغات.</div>';
+  }catch(err){console.error(err)}
+}
+async function deleteNotice(id){if(confirm("حذف التبليغ؟")){await api("/api/notices/"+id,{method:"DELETE"});loadNotices()}}
+
+check();
+</script>
+</body>
+</html>
