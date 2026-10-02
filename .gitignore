@@ -1,0 +1,6 @@
+node_modules/
+darajati.db
+darajati.db-shm
+darajati.db-wal
+.env
+.DS_Store
