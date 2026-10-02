@@ -36,7 +36,44 @@ async function login(){try{await api('/api/login',{method:'POST',body:JSON.strin
 async function logout(){await api('/api/logout',{method:'POST'});location.reload()}
 function tab(id,b){document.querySelectorAll('.section').forEach(x=>x.classList.remove('on'));$(id).classList.add('on');document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));b.classList.add('on')}
 async function addStudent(){let j=await api('/api/students',{method:'POST',body:JSON.stringify({name:$('sn').value,class_name:$('sc').value})});alert('تمت الإضافة. الرقم السري: '+j.code);$('sn').value='';loadStudents()}
-async function loadStudents(){let a=await api('/api/students');$('studentsList').innerHTML='<div class="table"><table><tr><th>الاسم</th><th>الصف</th><th>الرقم السري</th><th></th></tr>'+a.map(s=>`<tr><td>${s.name}</td><td>${s.class_name}</td><td><b>${s.code}</b></td><td><button class="danger" onclick="delStudent(${s.id})">حذف</button></td></tr>`).join('')+'</table></div>'}
+async function addStudent(){
+  const name=$('sn').value.trim();
+  const cls=$('sc').value;
+  const btn=document.querySelector('#students button.primary');
+
+  if(!name){
+    alert('يرجى كتابة الاسم الثلاثي أولاً');
+    $('sn').focus();
+    return;
+  }
+
+  try{
+    if(btn) btn.disabled=true;
+
+    const j=await api('/api/students',{
+      method:'POST',
+      body:JSON.stringify({
+        name:name,
+        class_name:cls
+      })
+    });
+
+    alert(
+      'تمت إضافة الطالب بنجاح ✅\n\n' +
+      'الاسم: '+j.name+'\n' +
+      'الصف: '+j.class_name+'\n' +
+      'الرقم السري: '+j.code
+    );
+
+    $('sn').value='';
+    await loadStudents();
+
+  }catch(e){
+    alert('تعذر إضافة الطالب ❌\n\n'+e.message);
+  }finally{
+    if(btn) btn.disabled=false;
+  }
+}{let a=await api('/api/students');$('studentsList').innerHTML='<div class="table"><table><tr><th>الاسم</th><th>الصف</th><th>الرقم السري</th><th></th></tr>'+a.map(s=>`<tr><td>${s.name}</td><td>${s.class_name}</td><td><b>${s.code}</b></td><td><button class="danger" onclick="delStudent(${s.id})">حذف</button></td></tr>`).join('')+'</table></div>'}
 async function delStudent(id){if(confirm('حذف الطالب؟')){await api('/api/students/'+id,{method:'DELETE'});loadAll()}}
 async function loadGrades(){let a=await api('/api/grades');$('gradesList').innerHTML=a.map(s=>`<tr><td>${s.name}</td>${['m1_t1','m2_t1'].map(k=>`<td><input style="width:65px" type="number" min="0" max="100" id="g${s.id}${k}" value="${s[k]??''}"></td>`).join('')}<td>${s.f1??'—'}</td><td><input style="width:65px" type="number" min="0" max="100" id="g${s.id}midyear" value="${s.midyear??''}"></td>${['m1_t2','m2_t2'].map(k=>`<td><input style="width:65px" type="number" min="0" max="100" id="g${s.id}${k}" value="${s[k]??''}"></td>`).join('')}<td>${s.f2??'—'}</td><td>${s.annual??'—'}</td><td><button class="primary" onclick="saveGrade(${s.id})">حفظ</button></td></tr>`).join('')}
 async function saveGrade(id){let keys=['m1_t1','m2_t1','midyear','m1_t2','m2_t2'];let b={};keys.forEach(k=>b[k]=$('g'+id+k).value===''?null:Number($('g'+id+k).value));await api('/api/grades/'+id,{method:'PUT',body:JSON.stringify(b)});loadGrades();alert('تم حفظ الدرجة')}
