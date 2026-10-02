@@ -10,4 +10,3 @@
     "express-session":"^1.18.2",
     "bcryptjs":"^3.0.2"
   }
-}
