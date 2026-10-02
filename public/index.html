@@ -85,7 +85,7 @@ async function addStudent(){
     $('sn').value='';
     await loadStudents();
     await loadGrades();
-    await loadAtt();
+    if (selectedAttendanceClass) await renderAttendanceList();;
   }catch(e){alert(e.message)}
 }
 async function loadStudents(){let a=await api('/api/students');$('studentsList').innerHTML='<div class="table"><table><tr><th>الاسم</th><th>الصف</th><th>الرقم السري</th><th></th></tr>'+a.map(s=>`<tr><td>${s.name}</td><td>${s.class_name}</td><td><b>${s.code}</b></td><td><button class="danger" onclick="delStudent(${s.id})">حذف</button></td></tr>`).join('')+'</table></div>'}
